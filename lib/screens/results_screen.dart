@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:textscanner/api/text_api.dart';
 
 class ResultsScreen extends StatefulWidget {
-  const ResultsScreen({super.key});
+  final InputImage image;
+  final RecognizedText recognizedText;
+  const ResultsScreen({super.key, required this.image, required this.recognizedText});
 
   @override
   State<ResultsScreen> createState() => _ResultsScreenState();
@@ -12,10 +16,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Results Screen'),
-      ),
-      body: const Center(
-        child: Text('Results functionality will be implemented here.'),
+        title: Text('${widget.recognizedText.blocks.length} Results'),
       ),
     );
   }
