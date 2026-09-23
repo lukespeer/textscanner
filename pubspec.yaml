@@ -38,6 +38,7 @@ dependencies:
   google_mlkit_text_recognition: ^0.17.1
   camera_avfoundation: ^0.10.3
   image: ^4.10.1
+  pixer: ^0.0.10
 
 dev_dependencies:
   flutter_test:

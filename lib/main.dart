@@ -10,10 +10,10 @@ import 'package:image/image.dart' as img;
 late InputImage inputImage;
 
 void main() async {
+  await initCamera();
   inputImage = await loadAssetImage("assets/images/sample.jpg").then((img.Image image) async {
     return await convertToInputImage(image);
   });
-  await initCamera();
 
   runApp(const MyApp());
 }
@@ -80,16 +80,8 @@ Future<img.Image> loadAssetImage(String path) async {
 }
 
 Future<InputImage> convertToInputImage(img.Image image) async {
-  final bytes = img.encodeJpg(image);
-  final inputImage = InputImage.fromBytes(
-    bytes: bytes,
-    metadata: InputImageMetadata(
-      size: Size(image.width.toDouble(), image.height.toDouble()),
-      rotation: InputImageRotation.rotation0deg,
-      format: InputImageFormat.bgra8888,
-      bytesPerRow: image.width * 4,
-    ),
-  );
+  final bytes = img.encodeBmp(image);
+  final inputImage = InputImage.fromBitmap(bitmap: bytes, width: image.width, height: image.height);
 
   return inputImage;
 }

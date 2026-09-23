@@ -18,6 +18,15 @@ class _ResultsScreenState extends State<ResultsScreen> {
       appBar: AppBar(
         title: Text('${widget.recognizedText.blocks.length} Results'),
       ),
+      body: ListView.builder(
+        itemCount: widget.recognizedText.blocks.length,
+        itemBuilder: (context, index) {
+          final block = widget.recognizedText.blocks[index];
+          return ListTile(
+            title: Text(block.text),
+          );
+        },
+      )
     );
   }
 }
