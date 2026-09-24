@@ -18,6 +18,34 @@ class _ResultsScreenState extends State<ResultsScreen> {
       appBar: AppBar(
         title: Text('${widget.recognizedText.blocks.length} Results'),
       ),
+<<<<<<< Updated upstream
+=======
+      body: Stack(
+        children: [
+          Center(
+            child: Image.memory(
+              img.encodeJpg(widget.image),
+              fit: BoxFit.contain,
+            ),
+          ),
+          BottomSheet(
+            builder:(context) => Container(
+              color: Colors.black.withOpacity(0.7),
+              padding: const EdgeInsets.all(16.0),
+              child: SingleChildScrollView(
+                child: Text(
+                  widget.recognizedText.text,
+                  style: const TextStyle(color: Colors.white, fontSize: 16),
+                ),
+              ),
+            ),
+            onClosing: () {
+              
+            },
+          )
+        ],
+      )
+>>>>>>> Stashed changes
     );
   }
-}
+} 
