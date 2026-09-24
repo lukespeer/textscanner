@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
+
 // call getCamera() to get the first available camera
 import 'package:textscanner/api/camera_api.dart';
 // call scanText(image) to scan text from an image
@@ -36,14 +38,30 @@ class _CameraScreenState extends State<CameraScreen> {
     _controller.dispose();
     super.dispose();
   }
-  void _onCapture() {
-    // will actually take a photo 
-    //print('capture tapped');
+  Future<void> _onCapture() async {
+    try {
+      await _initializeControllerFuture;
+
+      final image = await _controller.takePicture();
+
+      // for now just show the file path so we know it worked
+      print('photo saved to ${image.path}');
+    } catch (e) {
+      print('error taking photo: $e');
+    }
   }
 
-  void _onOpenLibrary() {
-    // will open the history screen 
-    //print('library tapped');
+  Future<void> _onOpenLibrary() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) {
+      // user closed the picker without choosing a photo
+      return;
+    }
+
+    // for now just show the file path so we know it worked
+    print('picked photo from library: ${image.path}');
   }
   @override
   Widget build(BuildContext context) {
