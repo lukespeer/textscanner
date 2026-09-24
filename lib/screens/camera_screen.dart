@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 
 // call getCamera() to get the first available camera
 import 'package:textscanner/api/camera_api.dart';
@@ -44,8 +45,8 @@ class _CameraScreenState extends State<CameraScreen> {
 
       final image = await _controller.takePicture();
 
-      // for now just show the file path so we know it worked
-      print('photo saved to ${image.path}');
+      await _scanImage(image.path);
+
     } catch (e) {
       print('error taking photo: $e');
     }
@@ -60,9 +61,17 @@ class _CameraScreenState extends State<CameraScreen> {
       return;
     }
 
-    // for now just show the file path so we know it worked
-    print('picked photo from library: ${image.path}');
+    await _scanImage(image.path);
   }
+
+  Future<void> _scanImage(String imagePath) async {
+    final inputImage = InputImage.fromFilePath(imagePath);
+    final recognizedText = await scanText(inputImage);
+
+    // for now, just print the text to the console
+    print('recognized text: ${recognizedText.text}');  
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
