@@ -20,8 +20,19 @@ class _CameraScreenState extends State<CameraScreen> {
       appBar: AppBar(
         title: const Text('Camera Screen'),
       ),
-      body: const Center(
-        child: Text('Camera functionality will be implemented here.'),
+      body: Column(
+        children: [
+          // camera preview will go here
+          Expanded(
+            child: Container(
+              margin: const EdgeInsets.all(8),
+              alignment: Alignment.center,
+              child: const Text('camera preview goes here'),
+            ),
+          ),
+          // buttons go here
+          SizedBox(height: 120),
+        ],
       ),
     );
   }
