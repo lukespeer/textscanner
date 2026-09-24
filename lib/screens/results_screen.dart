@@ -36,6 +36,11 @@ class _ResultsScreenState extends State<ResultsScreen> {
       appBar: AppBar(
         title: const Text('Results'),
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => Navigator.of(context).pop(),
+        child: const Icon(Icons.arrow_back),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       body: SafeArea(
         child: CustomScrollView(
           slivers: [
@@ -59,7 +64,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Expanded(
+                    Expanded( 
                       child: Text(
                         'Detected text',
                         style: theme.textTheme.headlineSmall?.copyWith(
