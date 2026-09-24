@@ -7,6 +7,7 @@ import 'package:flutter/services.dart';
 import 'package:textscanner/api/text_api.dart';
 import 'package:image/image.dart' as img;
 import 'dart:ui' as ui;
+import 'package:textscanner/storage/database.dart';
 
 
 late InputImage inputImage;
@@ -14,6 +15,7 @@ late img.Image asset;
 
 void main() async {
   await initCamera();
+  databaseInit();
   asset = await loadAssetImage("assets/images/sample.jpg");
   inputImage = await convertToInputImage(asset);
 
