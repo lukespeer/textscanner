@@ -14,6 +14,15 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  void _onCapture() {
+    // will actually take a photo 
+    print('capture tapped');
+  }
+
+  void _onOpenLibrary() {
+    // will open the history screen 
+    print('library tapped');
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +40,28 @@ class _CameraScreenState extends State<CameraScreen> {
             ),
           ),
           // buttons go here
-          SizedBox(height: 120),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: _onOpenLibrary,
+                    icon: const Icon(Icons.photo_library, color: Colors.white),
+                    iconSize: 32,
+                  ),
+                  FloatingActionButton(
+                    onPressed: _onCapture,
+                    backgroundColor: Colors.white,
+                    child: const Icon(Icons.camera_alt, color: Colors.black),
+                  ),
+                  const SizedBox(width: 48),
+
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
