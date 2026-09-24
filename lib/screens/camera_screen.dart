@@ -38,12 +38,12 @@ class _CameraScreenState extends State<CameraScreen> {
   }
   void _onCapture() {
     // will actually take a photo 
-    print('capture tapped');
+    //print('capture tapped');
   }
 
   void _onOpenLibrary() {
     // will open the history screen 
-    print('library tapped');
+    //print('library tapped');
   }
   @override
   Widget build(BuildContext context) {
@@ -55,13 +55,22 @@ class _CameraScreenState extends State<CameraScreen> {
         children: [
           // camera preview will go here
           Expanded(
-            child: Container(
-              margin: const EdgeInsets.all(8),
-              alignment: Alignment.center,
-              child: const Text('camera preview goes here'),
+            child: FutureBuilder<void>(
+              future: _initializeControllerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  // permission was denied
+                  return const Center(child: Text('could not start camera'));
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  // camera is ready, show the live feed
+                  return CameraPreview(_controller);
+                } else {
+                  // camera is still starting up
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
             ),
           ),
-          // buttons go here
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
