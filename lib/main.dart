@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
           // 4. Once complete, pass both the image and the awaited results
           if (snapshot.hasData) {
             return ResultsScreen(
-              image: image,
+              image: asset,
               recognizedText: snapshot.data!, // This is your awaited scanning output
             );
           }
