@@ -68,25 +68,39 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _scanImage(String imagePath) async {
-    final inputImage = InputImage.fromFilePath(imagePath);
-    final recognizedText = await scanText(inputImage);
-
-    // load the photo so the results screen can show it
     final bytes = await File(imagePath).readAsBytes();
-    final photo = img.decodeImage(bytes)!;
+    final decodedPhoto = img.decodeImage(bytes);
+    if (decodedPhoto == null) {
+      throw StateError('Could not decode captured image');
+    }
 
-    if (!mounted) return;
-
-    // go to the results screen
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ResultsScreen(
-          image: img.bakeOrientation(photo),
-          recognizedText: recognizedText,
-        ),
-      ),
+    final photo = img.bakeOrientation(decodedPhoto);
+    final tempDirectory = await Directory.systemTemp.createTemp(
+      'textscanner_',
     );
+    final normalizedFile = File('${tempDirectory.path}/normalized.jpg');
+
+    try {
+      await normalizedFile.writeAsBytes(img.encodeJpg(photo));
+      final recognizedText = await scanText(
+        InputImage.fromFilePath(normalizedFile.path),
+      );
+
+      if (!mounted) return;
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ResultsScreen(
+            image: photo,
+            recognizedText: recognizedText,
+          ),
+        ),
+      );
+    } finally {
+        normalizedFile.delete().catchError((_) {});
+        tempDirectory.delete().catchError((_) {});
+    }
   }
 
   @override
