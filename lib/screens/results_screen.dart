@@ -23,6 +23,11 @@ class _ResultsScreenState extends State<ResultsScreen> {
         SnackBar(
           content: Text('Copied result ${index + 1}'),
           behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          margin: const EdgeInsets.all(16),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
         ),
       );
   }
@@ -146,16 +151,28 @@ class _ResultCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
+                const SizedBox(width: 10),
+                OutlinedButton.icon(
+                  onPressed: () => onCopy(block, index),
+                  icon: const Icon(Icons.copy_rounded),
+                  label: const Text('Copy'),
+                    style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                )
               ],
             ),
             const SizedBox(height: 12),
-            GestureDetector(
-              onTap: () => onCopy(block, index),
-              child: SelectableText(
-                block.text,
-                style: theme.textTheme.bodyLarge?.copyWith(height: 1.4),
-              ),
-            ),
+            SelectableText(
+              block.text,
+              style: theme.textTheme.bodyLarge?.copyWith(height: 1.4),
+            )
           ],
         ),
       ),
