@@ -101,6 +101,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                         index: index,
                         block: blocks[index],
                         theme: theme,
+                        onCopy: _copyBlock,
                       ),
                     );
                   },
@@ -117,11 +118,13 @@ class _ResultCard extends StatelessWidget {
   final int index;
   final TextBlock block;
   final ThemeData theme;
+  final Future<void> Function(TextBlock block, int index) onCopy;
 
   const _ResultCard({
     required this.index,
     required this.block,
     required this.theme,
+    required this.onCopy,
   });
 
   @override
@@ -138,10 +141,16 @@ class _ResultCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  'Result ${index + 1}',
+                  'Result',
                   style: theme.textTheme.titleMedium?.copyWith(
                     fontWeight: FontWeight.w600,
                   ),
+                ),
+                const Spacer(),
+                IconButton(
+                  tooltip: 'Copy',
+                  onPressed: () => onCopy(block, index),
+                  icon: const Icon(Icons.copy_rounded),
                 ),
               ],
             ),
