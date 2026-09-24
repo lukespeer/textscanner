@@ -212,6 +212,37 @@ class _SelectableTextImage extends StatelessWidget {
   double _area(Rect rect) => rect.width * rect.height;
 }
 
+class BoundsPainter extends CustomPainter {
+  final List<TextBlock> blocks;
+  final Size imageSize;
+
+  BoundsPainter({required this.blocks, required this.imageSize});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scaleX = size.width / imageSize.width;
+    final scaleY = size.height / imageSize.height;
+
+    final paint = Paint()
+      ..color = Colors.red.withOpacity(0.5)
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2.0;
+
+    for (var block in blocks) {
+      final rect = Rect.fromLTRB(
+        block.boundingBox.left * scaleX,
+        block.boundingBox.top * scaleY,
+        block.boundingBox.right * scaleX,
+        block.boundingBox.bottom * scaleY,
+      );
+      canvas.drawRect(rect, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+}
+
 class _EmptyResultsCard extends StatelessWidget {
   final ThemeData theme;
 
