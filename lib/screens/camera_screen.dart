@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 // call getCamera() to get the first available camera
 import 'package:textscanner/api/camera_api.dart';
 // call scanText(image) to scan text from an image
@@ -14,14 +15,84 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+
+@override
+  void initState() {
+    super.initState();
+    // set up the camera when the screen opens
+    _controller = CameraController(
+      getCamera(),
+      ResolutionPreset.high,
+      enableAudio: false,
+    );
+    _initializeControllerFuture = _controller.initialize();
+  }
+  
+  @override
+  void dispose() {
+    // turn off the camera when leaving the screen
+    _controller.dispose();
+    super.dispose();
+  }
+  void _onCapture() {
+    // will actually take a photo 
+    //print('capture tapped');
+  }
+
+  void _onOpenLibrary() {
+    // will open the history screen 
+    //print('library tapped');
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Camera Screen'),
       ),
-      body: const Center(
-        child: Text('Camera functionality will be implemented here.'),
+      body: Column(
+        children: [
+          // camera preview will go here
+          Expanded(
+            child: FutureBuilder<void>(
+              future: _initializeControllerFuture,
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  // permission was denied
+                  return const Center(child: Text('could not start camera'));
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  // camera is ready, show the live feed
+                  return CameraPreview(_controller);
+                } else {
+                  // camera is still starting up
+                  return const Center(child: CircularProgressIndicator());
+                }
+              },
+            ),
+          ),
+          SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                    onPressed: _onOpenLibrary,
+                    icon: const Icon(Icons.photo_library, color: Colors.white),
+                    iconSize: 32,
+                  ),
+                  FloatingActionButton(
+                    onPressed: _onCapture,
+                    backgroundColor: Colors.white,
+                    child: const Icon(Icons.camera_alt, color: Colors.black),
+                  ),
+                  const SizedBox(width: 48),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
