@@ -1,5 +1,5 @@
 # Uncomment this line to define a global platform for your project
-platform :ios, '15.5'
+platform :ios, '17'
 
 # CocoaPods analytics sends network stats synchronously affecting flutter build latency.
 ENV['COCOAPODS_DISABLE_STATS'] = 'true'
@@ -39,5 +39,15 @@ end
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
+    
+    # Add these lines to fix the simulator architecture and target issues
+    target.build_configurations.each do |config|
+      # 1. Clear any architecture exclusions blocking Apple Silicon simulators
+      config.build_settings['EXCLUDED_ARCHS[sdk=iphonesimulator*]'] = ''
+      
+      # 2. Match deployment target (Change '14.0' to match your app's minimum iOS version if needed)
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
+    end
   end
 end
+
