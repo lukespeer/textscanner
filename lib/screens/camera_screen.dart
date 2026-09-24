@@ -102,7 +102,7 @@ class _CameraScreenState extends State<CameraScreen> {
           await normalizedFile.delete();
           await tempDirectory.delete();
         } on FileSystemException {
-
+          // clean up idc error
         }
     }
   }

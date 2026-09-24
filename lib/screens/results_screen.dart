@@ -13,8 +13,18 @@ class ResultsScreen extends StatefulWidget {
 }
 
 class _ResultsScreenState extends State<ResultsScreen> {
-  Future<void> _copyBlock(TextBlock block, int index) async {
-    await Clipboard.setData(ClipboardData(text: block.text));
+  late final List<TextBlock> _blocks;
+  late final List<String> _texts;
+
+  @override
+  void initState() {
+    super.initState();
+    _blocks = List<TextBlock>.from(widget.recognizedText.blocks);
+    _texts = _blocks.map((block) => block.text).toList();
+  }
+
+  Future<void> _copyBlock(String text, int index) async {
+    await Clipboard.setData(ClipboardData(text: text));
     if (!mounted) return;
 
     ScaffoldMessenger.of(context)
@@ -32,10 +42,36 @@ class _ResultsScreenState extends State<ResultsScreen> {
       );
   }
 
+  Future<void> _deleteBlock(int index) async {
+    final shouldDelete = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete result?'),
+        content: Text('Remove result ${index + 1} from this scan?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, true),
+            child: const Text('Delete'),
+          ),
+        ],
+      ),
+    );
+
+    if (!mounted || shouldDelete != true) return;
+    setState(() {
+      _blocks.removeAt(index);
+      _texts.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final blocks = widget.recognizedText.blocks;
+    final blocks = _blocks;
 
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +94,10 @@ class _ResultsScreenState extends State<ResultsScreen> {
                     memoryImage: Image.memory(img.encodeJpg(widget.image), fit: BoxFit.fill),
                     image: widget.image,
                     blocks: blocks,
-                    onBlockTap: _copyBlock,
+                    onBlockTap: (block, index) => _copyBlock(
+                      _texts[index],
+                      index,
+                    ),
                   ),
                 ),
               ),
@@ -105,8 +144,10 @@ class _ResultsScreenState extends State<ResultsScreen> {
                       child: _ResultCard(
                         index: index,
                         block: blocks[index],
+                        text: _texts[index],
                         theme: theme,
-                        onCopy: _copyBlock,
+                        onCopy: (text, index) => _copyBlock(text, index),
+                        onDelete: _deleteBlock,
                       ),
                     );
                   },
@@ -122,14 +163,18 @@ class _ResultsScreenState extends State<ResultsScreen> {
 class _ResultCard extends StatelessWidget {
   final int index;
   final TextBlock block;
+  final String text;
   final ThemeData theme;
-  final Future<void> Function(TextBlock block, int index) onCopy;
+  final Future<void> Function(String text, int index) onCopy;
+  final Future<void> Function(int index) onDelete;
 
   const _ResultCard({
     required this.index,
     required this.block,
+    required this.text,
     required this.theme,
     required this.onCopy,
+    required this.onDelete,
   });
 
   @override
@@ -143,7 +188,10 @@ class _ResultCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              crossAxisAlignment: WrapCrossAlignment.center,
               children: [
                 Text(
                   'Result',
@@ -151,12 +199,12 @@ class _ResultCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(width: 10),
+                const SizedBox(width: 2),
                 OutlinedButton.icon(
-                  onPressed: () => onCopy(block, index),
+                  onPressed: () => onCopy(text, index),
                   icon: const Icon(Icons.copy_rounded),
                   label: const Text('Copy'),
-                    style: OutlinedButton.styleFrom(
+                  style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,
                       vertical: 10,
@@ -165,12 +213,28 @@ class _ResultCard extends StatelessWidget {
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                     visualDensity: VisualDensity.compact,
                   ),
-                )
+                ),
+                OutlinedButton.icon(
+                  onPressed: () => onDelete(index),
+                  icon: const Icon(Icons.delete_outline_rounded),
+                  label: const Text('Delete'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: theme.colorScheme.error,
+                    side: BorderSide(color: theme.colorScheme.error),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 12),
             SelectableText(
-              block.text,
+              text,
               style: theme.textTheme.bodyLarge?.copyWith(height: 1.4),
             )
           ],
