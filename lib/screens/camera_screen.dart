@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 // call getCamera() to get the first available camera
 import 'package:textscanner/api/camera_api.dart';
 // call scanText(image) to scan text from an image
@@ -14,6 +15,27 @@ class CameraScreen extends StatefulWidget {
 }
 
 class _CameraScreenState extends State<CameraScreen> {
+  late CameraController _controller;
+  late Future<void> _initializeControllerFuture;
+
+@override
+  void initState() {
+    super.initState();
+    // set up the camera when the screen opens
+    _controller = CameraController(
+      getCamera(),
+      ResolutionPreset.high,
+      enableAudio: false,
+    );
+    _initializeControllerFuture = _controller.initialize();
+  }
+  
+  @override
+  void dispose() {
+    // turn off the camera when leaving the screen
+    _controller.dispose();
+    super.dispose();
+  }
   void _onCapture() {
     // will actually take a photo 
     print('capture tapped');
@@ -57,7 +79,6 @@ class _CameraScreenState extends State<CameraScreen> {
                     child: const Icon(Icons.camera_alt, color: Colors.black),
                   ),
                   const SizedBox(width: 48),
-
                 ],
               ),
             ),
