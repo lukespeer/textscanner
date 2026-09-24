@@ -6,14 +6,16 @@ import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart
 import 'package:flutter/services.dart';
 import 'package:textscanner/api/text_api.dart';
 import 'package:image/image.dart' as img;
+import 'dart:ui' as ui;
+
 
 late InputImage inputImage;
 late img.Image asset;
 
 void main() async {
+  await initCamera();
   asset = await loadAssetImage("assets/images/sample.jpg");
   inputImage = await convertToInputImage(asset);
-  await initCamera();
 
   runApp(const MyApp());
 }
@@ -64,7 +66,6 @@ Future<RecognizedText> _scanImageText(String assetPath) async {
   final RecognizedText recognizedText = await scanText(inputImage);
   return recognizedText;
 }
-
 Future<img.Image> loadAssetImage(String path) async {
   final data = await rootBundle.load(path);
 
@@ -80,16 +81,26 @@ Future<img.Image> loadAssetImage(String path) async {
 }
 
 Future<InputImage> convertToInputImage(img.Image image) async {
-  final bytes = img.encodeJpg(image);
-  final inputImage = InputImage.fromBytes(
-    bytes: bytes,
-    metadata: InputImageMetadata(
-      size: Size(image.width.toDouble(), image.height.toDouble()),
-      rotation: InputImageRotation.rotation0deg,
-      format: InputImageFormat.bgra8888,
-      bytesPerRow: image.width * 4,
-    ),
+  // Convert package:image -> PNG bytes
+  final png = Uint8List.fromList(img.encodePng(image));
+
+  // Decode PNG using Flutter's image decoder
+  final codec = await ui.instantiateImageCodec(png);
+  final frame = await codec.getNextFrame();
+
+  // Get raw RGBA pixels
+  final data = await frame.image.toByteData(
+    format: ui.ImageByteFormat.rawRgba,
   );
 
-  return inputImage;
+  if (data == null) {
+    throw Exception('Could not convert image to raw RGBA');
+  }
+
+  return InputImage.fromBitmap(
+    bitmap: data.buffer.asUint8List(),
+    width: frame.image.width,
+    height: frame.image.height,
+    rotation: 0,
+  );
 }
