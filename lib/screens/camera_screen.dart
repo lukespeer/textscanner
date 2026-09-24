@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+
 // call getCamera() to get the first available camera
 import 'package:textscanner/api/camera_api.dart';
 // call scanText(image) to scan text from an image
@@ -36,15 +39,39 @@ class _CameraScreenState extends State<CameraScreen> {
     _controller.dispose();
     super.dispose();
   }
-  void _onCapture() {
-    // will actually take a photo 
-    //print('capture tapped');
+  Future<void> _onCapture() async {
+    try {
+      await _initializeControllerFuture;
+
+      final image = await _controller.takePicture();
+
+      await _scanImage(image.path);
+
+    } catch (e) {
+      print('error taking photo: $e');
+    }
   }
 
-  void _onOpenLibrary() {
-    // will open the history screen 
-    //print('library tapped');
+  Future<void> _onOpenLibrary() async {
+    final picker = ImagePicker();
+    final image = await picker.pickImage(source: ImageSource.gallery);
+
+    if (image == null) {
+      // user closed the picker without choosing a photo
+      return;
+    }
+
+    await _scanImage(image.path);
   }
+
+  Future<void> _scanImage(String imagePath) async {
+    final inputImage = InputImage.fromFilePath(imagePath);
+    final recognizedText = await scanText(inputImage);
+
+    // for now, just print the text to the console
+    print('recognized text: ${recognizedText.text}');  
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

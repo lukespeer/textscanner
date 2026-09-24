@@ -36,9 +36,13 @@ dependencies:
   cupertino_icons: ^1.0.8
   camera: ^0.12.1
   google_mlkit_text_recognition: ^0.17.1
+<<<<<<< HEAD
+  image_picker: ^1.1.2
+=======
   camera_avfoundation: ^0.10.3
   image: ^4.10.1
 
+>>>>>>> origin/main
 dev_dependencies:
   flutter_test:
     sdk: flutter
