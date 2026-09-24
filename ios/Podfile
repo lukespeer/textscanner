@@ -47,6 +47,8 @@ post_install do |installer|
       
       # 2. Match deployment target (Change '14.0' to match your app's minimum iOS version if needed)
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '17.0'
+      # 3. Google ML Kit's headers use an older include style that newer Xcode rejects
+      config.build_settings['CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER'] = 'NO'
     end
   end
 end

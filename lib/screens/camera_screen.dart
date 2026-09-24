@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:image/image.dart' as img;
+import 'package:textscanner/screens/results_screen.dart';
 
 // call getCamera() to get the first available camera
 import 'package:textscanner/api/camera_api.dart';
@@ -68,8 +71,22 @@ class _CameraScreenState extends State<CameraScreen> {
     final inputImage = InputImage.fromFilePath(imagePath);
     final recognizedText = await scanText(inputImage);
 
-    // for now, just print the text to the console
-    print('recognized text: ${recognizedText.text}');  
+    // load the photo so the results screen can show it
+    final bytes = await File(imagePath).readAsBytes();
+    final photo = img.decodeImage(bytes)!;
+
+    if (!mounted) return;
+
+    // go to the results screen
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ResultsScreen(
+          image: img.bakeOrientation(photo),
+          recognizedText: recognizedText,
+        ),
+      ),
+    );
   }
 
   @override
@@ -80,7 +97,6 @@ class _CameraScreenState extends State<CameraScreen> {
       ),
       body: Column(
         children: [
-          // camera preview will go here
           Expanded(
             child: FutureBuilder<void>(
               future: _initializeControllerFuture,
