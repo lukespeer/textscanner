@@ -18,8 +18,6 @@ class _ResultsScreenState extends State<ResultsScreen> {
       appBar: AppBar(
         title: Text('${widget.recognizedText.blocks.length} Results'),
       ),
-<<<<<<< Updated upstream
-=======
       body: Stack(
         children: [
           Center(
@@ -45,7 +43,6 @@ class _ResultsScreenState extends State<ResultsScreen> {
           )
         ],
       )
->>>>>>> Stashed changes
     );
   }
 } 
