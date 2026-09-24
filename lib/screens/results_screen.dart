@@ -146,19 +146,16 @@ class _ResultCard extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                const Spacer(),
-                IconButton(
-                  tooltip: 'Copy',
-                  onPressed: () => onCopy(block, index),
-                  icon: const Icon(Icons.copy_rounded),
-                ),
               ],
             ),
             const SizedBox(height: 12),
-            SelectableText(
-              block.text,
-              style: theme.textTheme.bodyLarge?.copyWith(height: 1.4),
-            )
+            GestureDetector(
+              onTap: () => onCopy(block, index),
+              child: SelectableText(
+                block.text,
+                style: theme.textTheme.bodyLarge?.copyWith(height: 1.4),
+              ),
+            ),
           ],
         ),
       ),
