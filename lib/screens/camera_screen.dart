@@ -98,8 +98,12 @@ class _CameraScreenState extends State<CameraScreen> {
         ),
       );
     } finally {
-        normalizedFile.delete().catchError((_) {});
-        tempDirectory.delete().catchError((_) {});
+        try {
+          await normalizedFile.delete();
+          await tempDirectory.delete();
+        } on FileSystemException {
+
+        }
     }
   }
 

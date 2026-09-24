@@ -260,7 +260,7 @@ void paint(Canvas canvas, Size size) {
   final paint = Paint()
     ..color = Colors.purpleAccent
     ..style = PaintingStyle.stroke
-    ..strokeWidth = 3;
+    ..strokeWidth = 2;
 
   for (final block in blocks) {
     final box = block.boundingBox;
@@ -304,14 +304,6 @@ class _EmptyResultsCard extends StatelessWidget {
               'No text found',
               style: theme.textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              'Try scanning an image with clearer text.',
-              textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
               ),
             ),
           ],
