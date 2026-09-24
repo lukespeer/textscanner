@@ -8,11 +8,11 @@ import 'package:textscanner/api/text_api.dart';
 import 'package:image/image.dart' as img;
 
 late InputImage inputImage;
+late img.Image asset;
 
 void main() async {
-  inputImage = await loadAssetImage("assets/images/sample.jpg").then((img.Image image) async {
-    return await convertToInputImage(image);
-  });
+  asset = await loadAssetImage("assets/images/sample.jpg");
+  inputImage = await convertToInputImage(asset);
   await initCamera();
 
   runApp(const MyApp());
@@ -48,7 +48,7 @@ class MyApp extends StatelessWidget {
           // 4. Once complete, pass both the image and the awaited results
           if (snapshot.hasData) {
             return ResultsScreen(
-              image: inputImage,
+              image: image,
               recognizedText: snapshot.data!, // This is your awaited scanning output
             );
           }

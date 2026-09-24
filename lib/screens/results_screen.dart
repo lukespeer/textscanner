@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:textscanner/api/text_api.dart';
+import 'package:image/image.dart' as img;
 
 class ResultsScreen extends StatefulWidget {
-  final InputImage image;
+  final img.Image image;
   final RecognizedText recognizedText;
   const ResultsScreen({super.key, required this.image, required this.recognizedText});
 
