@@ -42,7 +42,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
       );
   }
 
-    Future<void> _editBlock(int index) async {
+  Future<void> _editBlock(int index) async {
     final controller = TextEditingController(text: _texts[index]);
     final editedText = await showDialog<String>(
       context: context,
@@ -72,30 +72,10 @@ class _ResultsScreenState extends State<ResultsScreen> {
       ),
     );
 
-    if (!mounted || editedText == null) return;
-    setState(() => _texts[index] = editedText);
+    setState(() => _texts[index] = editedText!);
   }
 
   Future<void> _deleteBlock(int index) async {
-    final shouldDelete = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Delete result?'),
-        content: Text('Remove result ${index + 1} from this scan?'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
-          ),
-        ],
-      ),
-    );
-
-    if (!mounted || shouldDelete != true) return;
     setState(() {
       _blocks.removeAt(index);
       _texts.removeAt(index);
