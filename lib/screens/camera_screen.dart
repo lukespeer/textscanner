@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image/image.dart' as img;
+import 'package:textscanner/screens/history_screen.dart';
 import 'package:textscanner/screens/results_screen.dart';
 
 // call getCamera() to get the first available camera
@@ -56,7 +57,12 @@ class _CameraScreenState extends State<CameraScreen> {
   }
 
   Future<void> _onOpenHistory() async {
-
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HistoryScreen()
+        ),
+      );
   }
 
   Future<void> _onOpenLibrary() async {
