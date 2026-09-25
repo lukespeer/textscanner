@@ -82,6 +82,10 @@ class _ResultsScreenState extends State<ResultsScreen> {
     });
   }
 
+  Future<void> _onSave() async {
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -90,6 +94,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Results'),
+        actions: [IconButton(onPressed: _onSave, icon: Icon(Icons.save), iconSize: 32, padding: EdgeInsets.fromLTRB(0, 0, 24, 0),)]
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pop(),
