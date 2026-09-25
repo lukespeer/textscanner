@@ -24,3 +24,14 @@ Future<void> databaseInit() async {
   );
 }
 
+//calls this from the results screen to add a scan to history
+Future<void> saveResult(String imagePath, String text) async {
+  await database.insert('results', {
+    'imagePath': imagePath,
+    'text': text,
+    'createdAt' : DateTime.now(). millisecondsSinceEpoch,
+  });
+}
+
+//calls this from the history screen to load everything saved so far
+
