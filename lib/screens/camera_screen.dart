@@ -55,6 +55,10 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
+  Future<void> _onOpenHistory() async {
+
+  }
+
   Future<void> _onOpenLibrary() async {
     final picker = ImagePicker();
     final image = await picker.pickImage(source: ImageSource.gallery);
@@ -111,7 +115,7 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Camera Screen'),
+        title: const Text('Text Scanner'),
       ),
       body: Column(
         children: [
@@ -133,7 +137,7 @@ class _CameraScreenState extends State<CameraScreen> {
                   }
                 },
               )
-            )
+            ) 
           ),
           SafeArea(
             child: Padding(
@@ -151,7 +155,11 @@ class _CameraScreenState extends State<CameraScreen> {
                     backgroundColor: Colors.white,
                     child: const Icon(Icons.camera_alt, color: Colors.black),
                   ),
-                  const SizedBox(width: 48),
+                  IconButton(
+                    onPressed: _onOpenHistory,
+                    icon: const Icon(Icons.history_rounded, color: Colors.white),
+                    iconSize: 32,
+                  )
                 ],
               ),
             ),
