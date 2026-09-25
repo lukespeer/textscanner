@@ -6,6 +6,7 @@ import 'package:image/image.dart' as img;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as p;
+import 'package:textscanner/storage/database.dart';
 
 Future<String> _saveFileToPath(img.Image image) async {
   final directory = await getApplicationDocumentsDirectory();
@@ -39,6 +40,7 @@ class ResultsScreen extends StatefulWidget {
 
 class _ResultsScreenState extends State<ResultsScreen> {
   bool isSaved = false;
+  int timestamp =   DateTime.now().millisecondsSinceEpoch;
   late final List<TextBlock> _blocks;
   late final List<String> _texts;
 
@@ -108,9 +110,26 @@ class _ResultsScreenState extends State<ResultsScreen> {
   }
 
   Future<void> _onSave() async {
+    if (isSaved) return;
+    isSaved = true;
     var path = await _saveFileToPath(widget.image);
 
+    await saveResult(ScanResult(
+      createdAt: timestamp,
+      imagePath: path,
+      texts: _blocks.map((block) => block.text).toList()
+    ));
 
+    ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(
+      content: Text('Saved Result'),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ));
   }
 
   @override
@@ -124,7 +143,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: IconButton(onPressed: isSaved ? null : _onSave, icon: Icon(Icons.download), iconSize: 32)
+            child: IconButton(onPressed: _onSave, icon: Icon(Icons.download), iconSize: 32)
           )
         ],
       ),
