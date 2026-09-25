@@ -31,6 +31,13 @@ Pull requests and issues are welcome. Issues are prefered, as it allows communic
 ![Edit Scan Information](assets/screenshots/edit_scan_information.jpeg)
 ![View Result Screen](assets/screenshots/results_i_suck_at_class.jpeg)
 
+## Documentation
+
+[Flutter Documentation](https://docs.flutter.dev/)
+[Material 3 Documentation](https://m3.material.io/)
+[Google ML Kit Documentation](https://developers.google.com/ml-kit/vision/text-recognition/v2)
+[SQFlite Documentation](https://pub.dev/packages/sqflite)
+
 ## License
 
 [MIT](https://choosealicense.com/licenses/mit/)
