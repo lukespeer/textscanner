@@ -1,7 +1,32 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image/image.dart' as img;
 import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+
+Future<String> _saveFileToPath(img.Image image) async {
+  final directory = await getApplicationDocumentsDirectory();
+
+  final scansDirectory = Directory(
+    p.join(directory.path, 'scans'),
+  );
+
+  await scansDirectory.create(recursive: true);
+
+  final filename =
+      '${DateTime.now().microsecondsSinceEpoch}.png';
+
+  final file = File(p.join(scansDirectory.path, filename));
+
+  final bytes = img.encodePng(image);
+
+  await file.writeAsBytes(bytes);
+
+  return file.path;
+}
 
 class ResultsScreen extends StatefulWidget {
   final img.Image image;
@@ -13,6 +38,7 @@ class ResultsScreen extends StatefulWidget {
 }
 
 class _ResultsScreenState extends State<ResultsScreen> {
+  bool isSaved = false;
   late final List<TextBlock> _blocks;
   late final List<String> _texts;
 
@@ -82,6 +108,8 @@ class _ResultsScreenState extends State<ResultsScreen> {
   }
 
   Future<void> _onSave() async {
+    var path = await _saveFileToPath(widget.image);
+
 
   }
 
@@ -96,7 +124,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 10),
-            child: IconButton(onPressed: _onSave, icon: Icon(Icons.download), iconSize: 32)
+            child: IconButton(onPressed: isSaved ? null : _onSave, icon: Icon(Icons.download), iconSize: 32)
           )
         ],
       ),
