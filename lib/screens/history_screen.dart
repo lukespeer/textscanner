@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
+import 'package:intl/intl.dart';
 import 'package:textscanner/api/text_api.dart';
 import 'package:textscanner/screens/results_screen.dart';
 import 'package:textscanner/storage/database.dart';
@@ -198,6 +199,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
             itemCount: scans.length,
             itemBuilder: (context, index) {
               final scan = scans[index];
+              var format = DateFormat.yMMMMEEEEd('en_US');
 
               return Card(
                 margin: const EdgeInsets.symmetric(
@@ -220,7 +222,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                       ],
                       const SizedBox(height: 4),
                       Text(
-                        scan.date.toLocal().toString().split('.')[0],
+                        format.format(scan.date),
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
