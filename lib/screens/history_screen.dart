@@ -86,7 +86,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Save Scan"),
+          title: const Text("Edit Information"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -152,6 +152,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
 
     refresh();
 
+    // safe because !mounted call
     ScaffoldMessenger.of(context)
     ..hideCurrentSnackBar()
     ..showSnackBar(SnackBar(
