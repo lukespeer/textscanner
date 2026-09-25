@@ -38,3 +38,8 @@ Future<List<Map<String, dynamic>>> getResults() async {
   return database.query('results', orderBy: 'createdAt DESC');
 }
 
+
+//calls this when the user deletes a scan or picture from the history
+Future<void> deleteResult(int id) async {
+  await database.delete('results', where: 'id = ?', whereArgs: [id]);
+}
