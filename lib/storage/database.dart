@@ -88,9 +88,16 @@ class ScanResult {
 
 // Save a scan to history
 Future<void> saveResult(ScanResult result) async {
+  final map = result.toMap();
+
+  if (result.id == null) {
+    map.remove('id');
+  }
+
   await database.insert(
     'results',
-    result.toMap()..remove('id'),
+    map,
+    conflictAlgorithm: ConflictAlgorithm.replace,
   );
 }
 

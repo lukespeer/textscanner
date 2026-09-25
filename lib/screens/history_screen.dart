@@ -78,6 +78,92 @@ class _HistoryScreenState extends State<HistoryScreen> {
     }
   }
 
+  Future<void> editInfo(ScanResult result) async {
+    final titleController = TextEditingController(text: result.title);
+    final descriptionController = TextEditingController(text: result.description);
+
+    final details = await showDialog<(String, String)>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Save Scan"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: "Title",
+                  hintText: "Ender a title",
+                  border: OutlineInputBorder()
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: descriptionController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: "Description",
+                  hintText: "Enter a description",
+                  border: OutlineInputBorder()
+                ),
+              )
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () {
+                final title = titleController.text.trim();
+
+                if (title.isEmpty) return;
+
+                Navigator.pop(
+                  context,
+                  (
+                    title,
+                    descriptionController.text.trim(),
+                  ),
+                );
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      }
+    );
+
+    if (details == null || !mounted) return;
+
+    final (title, description) = details;
+
+    await saveResult(ScanResult(
+      id: result.id,
+      title: title,
+      description: description,
+      imagePath: result.imagePath,
+      texts: result.texts,
+      createdAt: result.createdAt
+    ));
+
+    refresh();
+
+    ScaffoldMessenger.of(context)
+    ..hideCurrentSnackBar()
+    ..showSnackBar(SnackBar(
+      content: Text('Updated Result'),
+      behavior: SnackBarBehavior.floating,
+      duration: const Duration(seconds: 2),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
+    ));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -163,7 +249,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
                           viewScan(scan);
                           break;
                         case 'edit':
-                          print("edit info");
+                          editInfo(scan);
                           break;
                         case 'delete':
                           deleteScan(scan);
