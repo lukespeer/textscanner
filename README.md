@@ -16,6 +16,14 @@ flutter run
 
 While the scan results are not entirely accurate on images that are not screenshot, it can still occasionally get most of the text. If the text is not left to right, top to bottom, the scanner will not recognize it at all.
 
+## Why?
+
+This application is useful for a wide variety of audiences, but primarily people who need to take notes quickly. This is not perfect, but it works well (enough)
+
+## So is it Useful?
+
+In our group discussion, we concluded that is useful, especially for taking photos of flyers or posters.
+
 ## Contributing
 
 Pull requests and issues are welcome. Issues are prefered, as it allows communicating about the idea.
