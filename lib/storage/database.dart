@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'dart:convert';
 
 late Database database;
 
-//call this once at startup, before saving or loading any results
 Future<void> databaseInit() async {
   database = await openDatabase(
     join(await getDatabasesPath(), 'history.db'),
@@ -24,22 +24,60 @@ Future<void> databaseInit() async {
   );
 }
 
-//calls this from the results screen to add a scan to history
-Future<void> saveResult(String imagePath, String text) async {
-  await database.insert('results', {
-    'imagePath': imagePath,
-    'text': text,
-    'createdAt' : DateTime.now(). millisecondsSinceEpoch,
+class ScanResult {
+  final int? id;
+  final String imagePath;
+  final List<String> texts;
+  final int createdAt;
+
+  const ScanResult({
+    this.id,
+    required this.imagePath,
+    required this.texts,
+    required this.createdAt,
   });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'id': id,
+      'imagePath': imagePath,
+      'texts': jsonEncode(texts),
+      'createdAt': createdAt,
+    };
+  }
+
+  factory ScanResult.fromMap(Map<String, dynamic> map) {
+    return ScanResult(
+      id: map['id'] as int?,
+      imagePath: map['imagePath'] as String,
+      texts: List<String>.from(jsonDecode(map['texts'] as String)),
+      createdAt: map['createdAt'] as int,
+    );
+  }
+
+  DateTime get date => DateTime.fromMillisecondsSinceEpoch(createdAt);
 }
 
-//calls this from the history screen to load everything saved so far, most recent scan first
-Future<List<Map<String, dynamic>>> getResults() async {
-  return database.query('results', orderBy: 'createdAt DESC');
+Future<void> saveResult(ScanResult result) async {
+  await database.insert(
+    'results',
+    result.toMap()..remove('id'),
+  );
 }
 
+Future<List<ScanResult>> getResults() async {
+  final rows = await database.query(
+    'results',
+    orderBy: 'createdAt DESC',
+  );
 
-//calls this when the user deletes a scan or picture from the history
-Future<void> deleteResult(int id) async {
-  await database.delete('results', where: 'id = ?', whereArgs: [id]);
+  return rows.map((row) => ScanResult.fromMap(row)).toList();
+}
+
+Future<void> deleteResult(ScanResult result) async {
+  await database.delete(
+    'results',
+    where: 'id = ?',
+    whereArgs: [result.id],
+  );
 }
