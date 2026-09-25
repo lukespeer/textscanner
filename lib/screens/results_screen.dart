@@ -34,7 +34,6 @@ class _ResultsScreenState extends State<ResultsScreen> {
           content: Text('Copied result ${index + 1}'),
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
-          margin: const EdgeInsets.all(16),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -94,7 +93,12 @@ class _ResultsScreenState extends State<ResultsScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Results'),
-        actions: [IconButton(onPressed: _onSave, icon: Icon(Icons.save), iconSize: 32, padding: EdgeInsets.fromLTRB(0, 0, 24, 0),)]
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 10),
+            child: IconButton(onPressed: _onSave, icon: Icon(Icons.download), iconSize: 32)
+          )
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => Navigator.of(context).pop(),
@@ -129,7 +133,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                   children: [
                     Expanded( 
                       child: Text(
-                        'Detected text',
+                        'Results',
                         style: theme.textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),

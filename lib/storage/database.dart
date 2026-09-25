@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/widgets.dart';
 import 'package:path/path.dart';
@@ -80,4 +81,14 @@ Future<void> deleteResult(ScanResult result) async {
     where: 'id = ?',
     whereArgs: [result.id],
   );
+
+  try {
+    final file = File(result.imagePath);
+    if (await file.exists())
+    {
+      file.delete();
+    }
+  } catch (e) {
+    
+  }
 }
