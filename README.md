@@ -1,17 +1,32 @@
-# textscanner
+# Text Scanner
 
-A new Flutter project.
+An application to scan text and copy text from an image, as well as save and edit inconsistencies.
 
-## Getting Started
+## Development
 
-This project is a starting point for a Flutter application.
+For development, iOS seems to work the best,
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter clean
+flutter pub get
+flutter run
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Contributing
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Pull requests and issues are welcome. Issues are prefered, as it allows communicating about the idea.
+
+## Screenshots
+
+![Capture Screen](assets/screenshots/capture_screen.jpeg)
+![Results Screen](assets/screenshots/result_screen.jpeg)
+![Results Tab](assets/screenshots/results_tab.jpeg)
+![Save Scan](assets/screenshots/save_scan_dialog.jpeg)
+![History Screen](assets/screenshots/history_screen.jpeg)
+![History Screen Popup](assets/screenshots/history_screen_popup.jpeg)
+![Edit Scan Information](assets/screenshots/edit_scan_information.jpeg)
+![View Result Screen](assets/screenshots/results_i_suck_at_class.jpeg)
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)
