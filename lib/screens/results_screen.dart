@@ -147,10 +147,6 @@ class _ResultsScreenState extends State<ResultsScreen> {
           )
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => Navigator.of(context).pop(),
-        child: const Icon(Icons.arrow_back),
-      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
       body: SafeArea(
         child: CustomScrollView(
