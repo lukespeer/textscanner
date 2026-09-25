@@ -33,5 +33,8 @@ Future<void> saveResult(String imagePath, String text) async {
   });
 }
 
-//calls this from the history screen to load everything saved so far
+//calls this from the history screen to load everything saved so far, most recent scan first
+Future<List<Map<String, dynamic>>> getResults() async {
+  return database.query('results', orderBy: 'createdAt DESC');
+}
 
