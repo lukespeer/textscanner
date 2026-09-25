@@ -59,7 +59,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
       ..hideCurrentSnackBar()
       ..showSnackBar(
         SnackBar(
-          content: Text('Copied result ${index + 1}'),
+          content: Text('Result Copied!'),
           behavior: SnackBarBehavior.floating,
           duration: const Duration(seconds: 2),
           shape: RoundedRectangleBorder(
