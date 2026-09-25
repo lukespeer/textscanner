@@ -145,6 +145,7 @@ class _CameraScreenState extends State<CameraScreen> {
               )
             ) 
           ),
+          SizedBox(height: 10),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
