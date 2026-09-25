@@ -102,7 +102,7 @@ class _CameraScreenState extends State<CameraScreen> {
           await normalizedFile.delete();
           await tempDirectory.delete();
         } on FileSystemException {
-          // clean up idc error
+          // clean up id
         }
     }
   }
@@ -116,21 +116,24 @@ class _CameraScreenState extends State<CameraScreen> {
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder<void>(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: FutureBuilder<void>(
               future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  // permission was denied
-                  return const Center(child: Text('could not start camera'));
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  // camera is ready, show the live feed
-                  return CameraPreview(_controller);
-                } else {
-                  // camera is still starting up
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    // permission was denied
+                    return const Center(child: Text('could not start camera'));
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    // camera is ready, show the live feed
+                    return CameraPreview(_controller);
+                  } else {
+                    // camera is still starting up
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              )
+            )
           ),
           SafeArea(
             child: Padding(
