@@ -8,32 +8,51 @@ import 'package:sqflite/sqflite.dart';
 late Database database;
 
 Future<void> databaseInit() async {
-  final path = join(await getDatabasesPath(), 'history.db');
-
   database = await openDatabase(
-    path,
-    version: 1,
+    join(await getDatabasesPath(), 'history.db'),
+    version: 2,
+
     onCreate: (db, version) async {
       await db.execute('''
         CREATE TABLE results (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
+          title TEXT NOT NULL,
+          description TEXT NOT NULL,
           texts TEXT NOT NULL,
           imagePath TEXT NOT NULL,
           createdAt INTEGER NOT NULL
         )
       ''');
     },
+
+    onUpgrade: (db, oldVersion, newVersion) async {
+      if (oldVersion < 2) {
+        await db.execute('''
+          ALTER TABLE results
+          ADD COLUMN title TEXT NOT NULL DEFAULT ''
+        ''');
+
+        await db.execute('''
+          ALTER TABLE results
+          ADD COLUMN description TEXT NOT NULL DEFAULT ''
+        ''');
+      }
+    },
   );
 }
 
 class ScanResult {
   final int? id;
+  final String title;
+  final String description;
   final String imagePath;
   final List<String> texts;
   final int createdAt;
 
   const ScanResult({
     this.id,
+    required this.title,
+    required this.description,
     required this.imagePath,
     required this.texts,
     required this.createdAt,
@@ -42,6 +61,8 @@ class ScanResult {
   Map<String, dynamic> toMap() {
     return {
       'id': id,
+      'title': title,
+      'description': description,
       'imagePath': imagePath,
       'texts': jsonEncode(texts),
       'createdAt': createdAt,
@@ -51,6 +72,8 @@ class ScanResult {
   factory ScanResult.fromMap(Map<String, dynamic> map) {
     return ScanResult(
       id: map['id'] as int?,
+      title: map['title'] as String,
+      description: map['description'] as String,
       imagePath: map['imagePath'] as String,
       texts: List<String>.from(
         jsonDecode(map['texts'] as String),
@@ -67,11 +90,7 @@ class ScanResult {
 Future<void> saveResult(ScanResult result) async {
   await database.insert(
     'results',
-    {
-      'imagePath': result.imagePath,
-      'texts': jsonEncode(result.texts),
-      'createdAt': result.createdAt,
-    },
+    result.toMap()..remove('id'),
   );
 }
 
