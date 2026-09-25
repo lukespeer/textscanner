@@ -260,7 +260,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
               SliverPadding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 sliver: SliverToBoxAdapter(
-                  child: _EmptyResultsCard(theme: theme),
+                  child: _EmptyResultsCard(),
                 ),
               )
             else
@@ -275,7 +275,6 @@ class _ResultsScreenState extends State<ResultsScreen> {
                         index: index,
                         block: blocks[index],
                         text: _texts[index],
-                        theme: theme,
                         onCopy: (text, index) => _copyBlock(text, index),
                         onDelete: _deleteBlock,
                         onEdit: _editBlock,
@@ -295,7 +294,6 @@ class _ResultCard extends StatelessWidget {
   final int index;
   final TextBlock block;
   final String text;
-  final ThemeData theme;
   final Future<void> Function(String text, int index) onCopy;
   final Future<void> Function(int index) onEdit;
   final Future<void> Function(int index) onDelete;
@@ -304,7 +302,6 @@ class _ResultCard extends StatelessWidget {
     required this.index,
     required this.block,
     required this.text,
-    required this.theme,
     required this.onCopy,
     required this.onEdit,
     required this.onDelete,
@@ -312,6 +309,8 @@ class _ResultCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Card(
       elevation: 0,
       color: theme.colorScheme.surfaceContainerHighest,
@@ -463,41 +462,40 @@ class BoundsPainter extends CustomPainter {
     required this.imageSize,
   });
 
-@override
-void paint(Canvas canvas, Size size) {
-  final scaleX = size.width / imageSize.width;
-  final scaleY = size.height / imageSize.height;
+  @override
+  void paint(Canvas canvas, Size size) {
+    final scaleX = size.width / imageSize.width;
+    final scaleY = size.height / imageSize.height;
 
-  final paint = Paint()
-    ..color = Colors.purpleAccent
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 2;
+    final paint = Paint()
+      ..color = Colors.purpleAccent
+      ..style = PaintingStyle.stroke
+      ..strokeWidth = 2;
 
-  for (final block in blocks) {
-    final box = block.boundingBox;
+    for (final block in blocks) {
+      final box = block.boundingBox;
 
-    final rect = Rect.fromLTRB(
-      box.left * scaleX,
-      box.top * scaleY,
-      box.right * scaleX,
-      box.bottom * scaleY,
-    );
+      final rect = Rect.fromLTRB(
+        box.left * scaleX,
+        box.top * scaleY,
+        box.right * scaleX,
+        box.bottom * scaleY,
+      );
 
-    canvas.drawRect(rect, paint);
+      canvas.drawRect(rect, paint);
+    }
   }
-}
 
   @override
   bool shouldRepaint(covariant BoundsPainter oldDelegate) => true;
 }
 
 class _EmptyResultsCard extends StatelessWidget {
-  final ThemeData theme;
-
-  const _EmptyResultsCard({required this.theme});
+  const _EmptyResultsCard();
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Card(
       elevation: 0,
       color: theme.colorScheme.surfaceContainerHighest,
