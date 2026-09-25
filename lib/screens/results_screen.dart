@@ -42,26 +42,40 @@ class _ResultsScreenState extends State<ResultsScreen> {
       );
   }
 
-  Future<void> _deleteBlock(int index) async {
-    final shouldDelete = await showDialog<bool>(
+  Future<void> _editBlock(int index) async {
+    final controller = TextEditingController(text: _texts[index]);
+    final editedText = await showDialog<String>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Delete result?'),
-        content: Text('Remove result ${index + 1} from this scan?'),
+        title: Text('Edit result ${index + 1}'),
+        content: TextField(
+          controller: controller,
+          autofocus: true,
+          minLines: 2,
+          maxLines: 8,
+          textInputAction: TextInputAction.newline,
+          decoration: const InputDecoration(
+            border: OutlineInputBorder(),
+            hintText: 'Enter text',
+          ),
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.pop(context, false),
+            onPressed: () => Navigator.pop(context),
             child: const Text('Cancel'),
           ),
           FilledButton(
-            onPressed: () => Navigator.pop(context, true),
-            child: const Text('Delete'),
+            onPressed: () => Navigator.pop(context, controller.text),
+            child: const Text('Save'),
           ),
         ],
       ),
     );
 
-    if (!mounted || shouldDelete != true) return;
+    setState(() => _texts[index] = editedText!);
+  }
+
+  Future<void> _deleteBlock(int index) async {
     setState(() {
       _blocks.removeAt(index);
       _texts.removeAt(index);
@@ -148,6 +162,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                         theme: theme,
                         onCopy: (text, index) => _copyBlock(text, index),
                         onDelete: _deleteBlock,
+                        onEdit: _editBlock,
                       ),
                     );
                   },
@@ -166,6 +181,7 @@ class _ResultCard extends StatelessWidget {
   final String text;
   final ThemeData theme;
   final Future<void> Function(String text, int index) onCopy;
+  final Future<void> Function(int index) onEdit;
   final Future<void> Function(int index) onDelete;
 
   const _ResultCard({
@@ -174,6 +190,7 @@ class _ResultCard extends StatelessWidget {
     required this.text,
     required this.theme,
     required this.onCopy,
+    required this.onEdit,
     required this.onDelete,
   });
 
@@ -204,6 +221,20 @@ class _ResultCard extends StatelessWidget {
                   onPressed: () => onCopy(text, index),
                   icon: const Icon(Icons.copy_rounded),
                   label: const Text('Copy'),
+                  style: OutlinedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                    visualDensity: VisualDensity.compact,
+                  ),
+                ),
+              OutlinedButton.icon(
+                  onPressed: () => onEdit(index),
+                  icon: const Icon(Icons.edit_rounded),
+                  label: const Text('Edit'),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 10,

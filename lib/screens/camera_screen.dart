@@ -4,6 +4,7 @@ import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:image/image.dart' as img;
+import 'package:textscanner/screens/history_screen.dart';
 import 'package:textscanner/screens/results_screen.dart';
 
 // call getCamera() to get the first available camera
@@ -55,6 +56,15 @@ class _CameraScreenState extends State<CameraScreen> {
     }
   }
 
+  Future<void> _onOpenHistory() async {
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HistoryScreen()
+        ),
+      );
+  }
+
   Future<void> _onOpenLibrary() async {
     final picker = ImagePicker();
     final image = await picker.pickImage(source: ImageSource.gallery);
@@ -102,7 +112,7 @@ class _CameraScreenState extends State<CameraScreen> {
           await normalizedFile.delete();
           await tempDirectory.delete();
         } on FileSystemException {
-          // clean up idc error
+          // clean up id
         }
     }
   }
@@ -111,27 +121,31 @@ class _CameraScreenState extends State<CameraScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Camera Screen'),
+        title: const Text('Text Scanner'),
       ),
       body: Column(
         children: [
           Expanded(
-            child: FutureBuilder<void>(
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(20),
+              child: FutureBuilder<void>(
               future: _initializeControllerFuture,
-              builder: (context, snapshot) {
-                if (snapshot.hasError) {
-                  // permission was denied
-                  return const Center(child: Text('could not start camera'));
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  // camera is ready, show the live feed
-                  return CameraPreview(_controller);
-                } else {
-                  // camera is still starting up
-                  return const Center(child: CircularProgressIndicator());
-                }
-              },
-            ),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    // permission was denied
+                    return const Center(child: Text('could not start camera'));
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    // camera is ready, show the live feed
+                    return CameraPreview(_controller);
+                  } else {
+                    // camera is still starting up
+                    return const Center(child: CircularProgressIndicator());
+                  }
+                },
+              )
+            ) 
           ),
+          SizedBox(height: 10),
           SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
@@ -148,7 +162,11 @@ class _CameraScreenState extends State<CameraScreen> {
                     backgroundColor: Colors.white,
                     child: const Icon(Icons.camera_alt, color: Colors.black),
                   ),
-                  const SizedBox(width: 48),
+                  IconButton(
+                    onPressed: _onOpenHistory,
+                    icon: const Icon(Icons.history_rounded, color: Colors.white),
+                    iconSize: 32,
+                  )
                 ],
               ),
             ),
