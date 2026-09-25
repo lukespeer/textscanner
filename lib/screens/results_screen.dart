@@ -111,10 +111,74 @@ class _ResultsScreenState extends State<ResultsScreen> {
 
   Future<void> _onSave() async {
     if (isSaved) return;
+
+    final titleController = TextEditingController();
+    final descriptionController = TextEditingController();
+
+    final details = await showDialog<(String, String)>(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Save Scan"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: titleController,
+                autofocus: true,
+                decoration: const InputDecoration(
+                  labelText: "Title",
+                  hintText: "Ender a title",
+                  border: OutlineInputBorder()
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: descriptionController,
+                maxLines: 3,
+                decoration: InputDecoration(
+                  labelText: "Description",
+                  hintText: "Enter a description",
+                  border: OutlineInputBorder()
+                ),
+              )
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            FilledButton(
+              onPressed: () {
+                final title = titleController.text.trim();
+
+                if (title.isEmpty) return;
+
+                Navigator.pop(
+                  context,
+                  (
+                    title,
+                    descriptionController.text.trim(),
+                  ),
+                );
+              },
+              child: const Text('Save'),
+            ),
+          ],
+        );
+      }
+    );
+
+    if (details == null || !mounted) return;
+
+    final (title, description) = details;
     isSaved = true;
     var path = await _saveFileToPath(widget.image);
 
     await saveResult(ScanResult(
+      title: title,
+      description: description,
       createdAt: timestamp,
       imagePath: path,
       texts: _blocks.map((block) => block.text).toList()
